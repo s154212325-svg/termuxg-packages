@@ -45,6 +45,8 @@ jobs:
         env:
           TERMUX_BUILDER_IMAGE_NAME: termuxg-package-builder
         run: |
+          find . -name "*.sh" -exec chmod +x {} +
+          chmod +x scripts/bin/* 2>/dev/null || true
           extra=""
           if [ -n "${{ inputs.add_packages }}" ]; then extra="--add ${{ inputs.add_packages }}"; fi
           ./scripts/run-docker.sh ./scripts/build-bootstraps.sh --architectures ${{ matrix.arch }} $extra
