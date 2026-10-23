@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [aarch64, arm, i686, x86_64]
+        arch: [aarch64]
     steps:
       - name: Free disk space
         run: |
@@ -39,7 +39,7 @@ jobs:
       # The official builder image has /data/data/com.termux baked in (toolchain,
       # sysroot), so it MUST be rebuilt from this repo's properties.sh.
       - name: Build builder docker image for com.termuxg
-        run: docker build -t termuxg-package-builder -f scripts/Dockerfile scripts
+        run: for i in 1 2 3; do docker build -t termuxg-package-builder -f scripts/Dockerfile scripts && exit 0; echo "retry $i"; sleep 60; done; exit 1
 
       - name: Build bootstrap (${{ matrix.arch }})
         env:
