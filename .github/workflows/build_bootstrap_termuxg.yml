@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       add_packages:
-        description: "Extra packages to include (comma separated, e.g. openssh,git). Leave empty for default."
+        description: "Extra packages (comma separated, e.g. openssh,git). Empty = default."
         required: false
         default: ""
 
 permissions:
-  contents: write # needed to create the release
+  contents: write
 
 concurrency:
   group: ${{ github.workflow }}
@@ -30,26 +30,48 @@ jobs:
           sudo docker image prune --all --force
           df -h /
 
-      - name: Git clone
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Verify package name
         run: grep -n '^TERMUX_APP__PACKAGE_NAME=' scripts/properties.sh
 
-      # The official builder image has /data/data/com.termux baked in (toolchain,
-      # sysroot), so it MUST be rebuilt from this repo's properties.sh.
       - name: Build builder docker image for com.termuxg
-        run: for i in 1 2 3; do docker build -t termuxg-package-builder -f scripts/Dockerfile scripts && exit 0; echo "retry $i"; sleep 60; done; exit 1
+        run: |
+          for i in 1 2 3; do
+            docker build -t termuxg-package-builder -f scripts/Dockerfile scripts && exit 0
+            echo "retry $i"; sleep 60
+          done
+          exit 1
 
       - name: Build bootstrap (${{ matrix.arch }})
         env:
           TERMUX_BUILDER_IMAGE_NAME: termuxg-package-builder
         run: |
+          set -o pipefail
           find . -name "*.sh" -exec chmod +x {} +
-          chmod +x scripts/bin/* 2>/dev/null || true
           extra=""
           if [ -n "${{ inputs.add_packages }}" ]; then extra="--add ${{ inputs.add_packages }}"; fi
-          ./scripts/run-docker.sh ./scripts/build-bootstraps.sh --architectures ${{ matrix.arch }} $extra
+          ./scripts/run-docker.sh ./scripts/build-bootstraps.sh --architectures ${{ matrix.arch }} $extra 2>&1 | tee build.log
+
+      - name: Locate bootstrap zip
+        if: always()
+        run: |
+          echo "--- workspace ---"; ls -la | head -40
+          echo "--- search ---"
+          find / -name 'bootstrap-*.zip' -not -path '/proc/*' 2>/dev/null | head
+          z=$(find / -name 'bootstrap-${{ matrix.arch }}.zip' -not -path '/proc/*' 2>/dev/null | head -1)
+          if [ -n "$z" ] && [ "$z" != "$PWD/bootstrap-${{ matrix.arch }}.zip" ]; then cp "$z" .; fi
+          ls -lh bootstrap-*.zip || true
+          echo "--- build.log markers ---"
+          grep -n "Creating 'bootstrap\|Finished successfully\|No debs found" build.log | tail -5 || true
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log-${{ matrix.arch }}
+          path: build.log
+          if-no-files-found: ignore
 
       - name: Upload bootstrap
         uses: actions/upload-artifact@v4
@@ -65,6 +87,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           path: out
+          pattern: bootstrap-*
           merge-multiple: true
 
       - name: Publish release
@@ -78,4 +101,3 @@ jobs:
             --title "Bootstrap archives for com.termuxg" \
             --notes "$(cat SHA256SUMS)" \
             bootstrap-*.zip SHA256SUMS
-# reindex
