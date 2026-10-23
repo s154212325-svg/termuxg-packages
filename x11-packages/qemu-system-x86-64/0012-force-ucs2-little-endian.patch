@@ -1,0 +1,19 @@
+--- a/ui/curses.c
++++ b/ui/curses.c
+@@ -584,14 +584,14 @@ static void font_setup(void)
+       0x25bc
+     };
+ 
+-    ucs2_to_nativecharset = iconv_open(local_codeset, "UCS-2");
++    ucs2_to_nativecharset = iconv_open(local_codeset, "UCS-2LE");
+     if (ucs2_to_nativecharset == (iconv_t) -1) {
+         fprintf(stderr, "Could not convert font glyphs from UCS-2: '%s'\n",
+                         strerror(errno));
+         exit(1);
+     }
+ 
+-    nativecharset_to_ucs2 = iconv_open("UCS-2", local_codeset);
++    nativecharset_to_ucs2 = iconv_open("UCS-2LE", local_codeset);
+     if (nativecharset_to_ucs2 == (iconv_t) -1) {
+         iconv_close(ucs2_to_nativecharset);
+         fprintf(stderr, "Could not convert font glyphs to UCS-2: '%s'\n",

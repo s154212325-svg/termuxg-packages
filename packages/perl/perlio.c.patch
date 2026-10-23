@@ -1,0 +1,20 @@
+--- a/perlio.c
++++ b/perlio.c
+@@ -5513,7 +5513,7 @@
+           f = PerlIO_fdopen(fd, "w+b");
+ #elif ! defined(OS2)
+      int fd = -1;
+-     char tempname[] = "/tmp/PerlIO_XXXXXX";
++     char tempname[] = "@TERMUX_PREFIX@/tmp/PerlIO_XXXXXX";
+      const char * const tmpdir = TAINTING_get ? NULL : PerlEnv_getenv("TMPDIR");
+      SV * sv = NULL;
+      int old_umask = umask(0177);
+@@ -5521,7 +5521,7 @@
+      if (tmpdir && *tmpdir) {
+          /* if TMPDIR is set and not empty, we try that first */
+          sv = newSVpv(tmpdir, 0);
+-         sv_catpv(sv, tempname + 4);
++         sv_catpv(sv, tempname + sizeof("@TERMUX_PREFIX@/tmp") - 1);
+          fd = Perl_my_mkostemp_cloexec(SvPVX(sv), imode | O_VMS_DELETEONCLOSE);
+      }
+      if (fd < 0) {

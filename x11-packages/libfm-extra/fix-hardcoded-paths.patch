@@ -1,0 +1,34 @@
+--- a/src/base/fm-file-info.c
++++ b/src/base/fm-file-info.c
+@@ -1403,8 +1403,7 @@ gboolean fm_file_info_is_executable_type(FmFileInfo* fi)
+                     GFile *target = g_file_new_for_path(fi->target);
+                     char *path = g_file_get_path(target);
+                     g_object_unref(target);
+-                    gboolean usr_share = (g_str_has_prefix(path, "/usr/share/") ||
+-                                          g_str_has_prefix(path, "/usr/local/share/"));
++                    gboolean usr_share = g_str_has_prefix(path, "@TERMUX_PREFIX@/share/");
+                     g_free(path);
+                     if (!usr_share)
+                         return TRUE;
+--- a/src/gtk/fm-app-chooser-dlg.c
++++ b/src/gtk/fm-app-chooser-dlg.c
+@@ -232,7 +232,7 @@ static void on_browse_btn_clicked(GtkButton* btn, AppChooserData* data)
+     gtk_file_filter_add_custom(filter,
+         GTK_FILE_FILTER_FILENAME|GTK_FILE_FILTER_MIME_TYPE, exec_filter_func, NULL, NULL);
+     gtk_file_filter_set_name(filter, _("Executable files"));
+-    file = fm_select_file(GTK_WINDOW(data->dlg), NULL, "/usr/bin", TRUE, FALSE, filter, NULL);
++    file = fm_select_file(GTK_WINDOW(data->dlg), NULL, "@TERMUX_PREFIX@/bin", TRUE, FALSE, filter, NULL);
+ 
+     if (file == NULL)
+         return;
+--- a/src/modules/gtk-fileprop-x-desktop.c
++++ b/src/modules/gtk-fileprop-x-desktop.c
+@@ -67,7 +67,7 @@ static void _dentry_browse_exec_event(GtkButton *button, FmFilePropertiesDEntryD
+                                           NULL, GTK_FILE_CHOOSER_ACTION_OPEN,
+                                           GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                           GTK_STOCK_OPEN, GTK_RESPONSE_OK, NULL);
+-    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(chooser), "/usr/bin");
++    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(chooser), "@TERMUX_PREFIX@/bin");
+     filter = gtk_file_filter_new();
+     gtk_file_filter_set_name(GTK_FILE_FILTER(filter), _("Executable files") );
+     gtk_file_filter_add_custom(GTK_FILE_FILTER(filter), GTK_FILE_FILTER_FILENAME,

@@ -1,0 +1,35 @@
+--- a/src/gui/entry/EntryView.cpp
++++ b/src/gui/entry/EntryView.cpp
+@@ -18,11 +18,12 @@
+ 
+ #include "EntryView.h"
+ 
+-#include <QAccessible>
+ #include <QActionGroup>
++#include <QCoreApplication>
+ #include <QDrag>
+ #include <QGuiApplication>
+ #include <QHeaderView>
++#include <QKeyEvent>
+ #include <QListWidget>
+ #include <QMenu>
+ #include <QPainter>
+@@ -186,18 +187,15 @@ void EntryView::keyPressEvent(QKeyEvent* event)
+ 
+     int last = m_model->rowCount() - 1;
+     if (last > 0) {
+-        QAccessibleEvent accessibleEvent(this, QAccessible::PageChanged);
+         if (event->key() == Qt::Key_Up && currentIndex().row() == 0) {
+             QModelIndex index = m_sortModel->mapToSource(m_sortModel->index(last, 0));
+             setCurrentEntry(m_model->entryFromIndex(index));
+-            QAccessible::updateAccessibility(&accessibleEvent);
+             return;
+         }
+ 
+         if (event->key() == Qt::Key_Down && currentIndex().row() == last) {
+             QModelIndex index = m_sortModel->mapToSource(m_sortModel->index(0, 0));
+             setCurrentEntry(m_model->entryFromIndex(index));
+-            QAccessible::updateAccessibility(&accessibleEvent);
+             return;
+         }
+     }

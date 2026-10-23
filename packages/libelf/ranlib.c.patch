@@ -1,0 +1,14 @@
+--- a/src/ranlib.c
++++ b/src/ranlib.c
+@@ -121,11 +121,6 @@ copy_content (Elf *elf, int newfd, off_t off, size_t n)
+ 
+   assert (off + n <= len);
+ 
+-  /* Tell the kernel we will read all the pages sequentially.  */
+-  size_t ps = sysconf (_SC_PAGESIZE);
+-  if (n > 2 * ps)
+-    posix_madvise (rawfile + (off & ~(ps - 1)), n, POSIX_MADV_SEQUENTIAL);
+-
+   return write_retry (newfd, rawfile + off, n) != (ssize_t) n;
+ }
+ 

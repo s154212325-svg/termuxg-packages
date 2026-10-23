@@ -1,0 +1,78 @@
+name: Build bootstrap archives (com.termuxg)
+
+on:
+  workflow_dispatch:
+    inputs:
+      add_packages:
+        description: "Extra packages to include (comma separated, e.g. openssh,git). Leave empty for default."
+        required: false
+        default: ""
+
+permissions:
+  contents: write # needed to create the release
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [aarch64, arm, i686, x86_64]
+    steps:
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          sudo docker image prune --all --force
+          df -h /
+
+      - name: Git clone
+        uses: actions/checkout@v4
+
+      - name: Verify package name
+        run: grep -n '^TERMUX_APP__PACKAGE_NAME=' scripts/properties.sh
+
+      # The official builder image has /data/data/com.termux baked in (toolchain,
+      # sysroot), so it MUST be rebuilt from this repo's properties.sh.
+      - name: Build builder docker image for com.termuxg
+        run: docker build -t termuxg-package-builder -f scripts/Dockerfile scripts
+
+      - name: Build bootstrap (${{ matrix.arch }})
+        env:
+          TERMUX_BUILDER_IMAGE_NAME: termuxg-package-builder
+        run: |
+          extra=""
+          if [ -n "${{ inputs.add_packages }}" ]; then extra="--add ${{ inputs.add_packages }}"; fi
+          ./scripts/run-docker.sh ./scripts/build-bootstraps.sh --architectures ${{ matrix.arch }} $extra
+
+      - name: Upload bootstrap
+        uses: actions/upload-artifact@v4
+        with:
+          name: bootstrap-${{ matrix.arch }}
+          path: bootstrap-${{ matrix.arch }}.zip
+          if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: out
+          merge-multiple: true
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd out
+          sha256sum bootstrap-*.zip | tee SHA256SUMS
+          tag="bootstrap-termuxg-$(date +%Y.%m.%d)-r${{ github.run_number }}"
+          gh release create "$tag" --repo "$GITHUB_REPOSITORY" \
+            --title "Bootstrap archives for com.termuxg" \
+            --notes "$(cat SHA256SUMS)" \
+            bootstrap-*.zip SHA256SUMS

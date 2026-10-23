@@ -1,0 +1,239 @@
+--- a/linux-user/aarch64/signal.c
++++ b/linux-user/aarch64/signal.c
+@@ -41,7 +41,7 @@ struct target_ucontext {
+     target_stack_t tuc_stack;
+     target_sigset_t tuc_sigmask;
+     /* glibc uses a 1024-bit sigset_t */
+-    char __unused[1024 / 8 - sizeof(target_sigset_t)];
++    char __qemu_unused[1024 / 8 - sizeof(target_sigset_t)];
+     /* last for future expansion */
+     struct target_sigcontext tuc_mcontext;
+ };
+--- a/linux-user/arm/signal.c
++++ b/linux-user/arm/signal.c
+@@ -54,7 +54,7 @@ struct target_ucontext {
+     target_stack_t tuc_stack;
+     struct target_sigcontext tuc_mcontext;
+     target_sigset_t  tuc_sigmask;       /* mask last for extensibility */
+-    char __unused[128 - sizeof(target_sigset_t)];
++    char __qemu_unused[128 - sizeof(target_sigset_t)];
+     abi_ulong tuc_regspace[128] __attribute__((__aligned__(8)));
+ };
+ 
+--- a/linux-user/riscv/signal.c
++++ b/linux-user/riscv/signal.c
+@@ -45,7 +45,7 @@ struct target_ucontext {
+     abi_ptr uc_link;
+     target_stack_t uc_stack;
+     target_sigset_t uc_sigmask;
+-    uint8_t   __unused[1024 / 8 - sizeof(target_sigset_t)];
++    uint8_t   __qemu_unused[1024 / 8 - sizeof(target_sigset_t)];
+     struct target_sigcontext uc_mcontext QEMU_ALIGNED(16);
+ };
+ 
+--- a/linux-user/syscall_defs.h
++++ b/linux-user/syscall_defs.h
+@@ -1257,8 +1257,8 @@ struct target_stat {
+     abi_ulong  target_st_mtime_nsec;
+     abi_ulong  target_st_ctime;
+     abi_ulong  target_st_ctime_nsec;
+-    abi_ulong  __unused4;
+-    abi_ulong  __unused5;
++    abi_ulong  __qemu_unused4;
++    abi_ulong  __qemu_unused5;
+ };
+ 
+ /* This matches struct stat64 in glibc2.1, hence the absolutely
+@@ -1347,7 +1347,7 @@ struct target_stat {
+     abi_long        target_st_ctime;
+     abi_long        st_blksize;
+     abi_long        st_blocks;
+-    abi_ulong       __unused4[2];
++    abi_ulong       __qemu_unused4[2];
+ };
+ 
+ #define TARGET_HAS_STRUCT_STAT64
+@@ -1381,7 +1381,7 @@ struct target_stat64 {
+     abi_ulong       target_st_ctime;
+     abi_ulong       target_st_ctime_nsec;
+ 
+-    abi_ulong       __unused4[3];
++    abi_ulong       __qemu_unused4[3];
+ };
+ 
+ #elif defined(TARGET_SPARC)
+@@ -1404,7 +1404,7 @@ struct target_stat {
+     abi_ulong       target_st_ctime_nsec;
+     abi_long        st_blksize;
+     abi_long        st_blocks;
+-    abi_ulong       __unused1[2];
++    abi_ulong       __qemu_unused1[2];
+ };
+ 
+ #define TARGET_HAS_STRUCT_STAT64
+@@ -1440,8 +1440,8 @@ struct target_stat64 {
+     abi_uint        target_st_ctime;
+     abi_uint        target_st_ctime_nsec;
+ 
+-    abi_uint        __unused1;
+-    abi_uint        __unused2;
++    abi_uint        __qemu_unused1;
++    abi_uint        __qemu_unused2;
+ };
+ 
+ #elif defined(TARGET_PPC)
+@@ -1469,10 +1469,10 @@ struct target_stat {
+     abi_ulong  target_st_mtime_nsec;
+     abi_ulong  target_st_ctime;
+     abi_ulong  target_st_ctime_nsec;
+-    abi_ulong  __unused4;
+-    abi_ulong  __unused5;
++    abi_ulong  __qemu_unused4;
++    abi_ulong  __qemu_unused5;
+ #if defined(TARGET_PPC64)
+-    abi_ulong  __unused6;
++    abi_ulong  __qemu_unused6;
+ #endif
+ };
+ 
+@@ -1497,8 +1497,8 @@ struct QEMU_PACKED target_stat64 {
+     abi_uint       target_st_mtime_nsec;
+     abi_int        target_st_ctime;
+     abi_uint       target_st_ctime_nsec;
+-    abi_uint       __unused4;
+-    abi_uint       __unused5;
++    abi_uint       __qemu_unused4;
++    abi_uint       __qemu_unused5;
+ };
+ #endif
+ 
+@@ -1522,8 +1522,8 @@ struct target_stat {
+     abi_ulong  target_st_mtime_nsec;
+     abi_ulong  target_st_ctime;
+     abi_ulong  target_st_ctime_nsec;
+-    abi_ulong  __unused4;
+-    abi_ulong  __unused5;
++    abi_ulong  __qemu_unused4;
++    abi_ulong  __qemu_unused5;
+ };
+ 
+ /* FIXME: Microblaze no-mmu user-space has a difference stat64 layout...  */
+@@ -1571,13 +1571,13 @@ struct target_stat {
+     abi_ulong  st_blksize;
+     abi_ulong  st_blocks;
+     abi_ulong  target_st_atime;
+-    abi_ulong  __unused1;
++    abi_ulong  __qemu_unused1;
+     abi_ulong  target_st_mtime;
+-    abi_ulong  __unused2;
++    abi_ulong  __qemu_unused2;
+     abi_ulong  target_st_ctime;
+-    abi_ulong  __unused3;
+-    abi_ulong  __unused4;
+-    abi_ulong  __unused5;
++    abi_ulong  __qemu_unused3;
++    abi_ulong  __qemu_unused4;
++    abi_ulong  __qemu_unused5;
+ };
+ 
+ /* This matches struct stat64 in glibc2.1, hence the absolutely
+@@ -1797,7 +1797,7 @@ struct target_stat64 {
+     abi_ulong    target_st_mtime_nsec;
+     abi_ulong    target_st_ctime;
+     abi_ulong    target_st_ctime_nsec;
+-    abi_long     __unused[3];
++    abi_long     __qemu_unused[3];
+ };
+ 
+ #elif defined(TARGET_SH4)
+@@ -1820,8 +1820,8 @@ struct target_stat {
+     abi_ulong  target_st_mtime_nsec;
+     abi_ulong  target_st_ctime;
+     abi_ulong  target_st_ctime_nsec;
+-    abi_ulong  __unused4;
+-    abi_ulong  __unused5;
++    abi_ulong  __qemu_unused4;
++    abi_ulong  __qemu_unused5;
+ };
+ 
+ /* This matches struct stat64 in glibc2.1, hence the absolutely
+@@ -1884,7 +1884,7 @@ struct target_stat {
+     abi_ulong       target_st_ctime;
+     abi_ulong       target_st_ctime_nsec;
+ 
+-    abi_long        __unused[3];
++    abi_long        __qemu_unused[3];
+ };
+ #elif defined(TARGET_S390X)
+ struct target_stat {
+@@ -1905,7 +1905,7 @@ struct target_stat {
+     abi_ulong  target_st_ctime_nsec;
+     abi_ulong  st_blksize;
+     abi_long       st_blocks;
+-    abi_ulong  __unused[3];
++    abi_ulong  __qemu_unused[3];
+ };
+ #elif defined(TARGET_AARCH64)
+ #define TARGET_STAT_HAVE_NSEC
+@@ -1928,7 +1928,7 @@ struct target_stat {
+     abi_ulong  target_st_mtime_nsec;
+     abi_long  target_st_ctime;
+     abi_ulong  target_st_ctime_nsec;
+-    abi_uint __unused[2];
++    abi_uint __qemu_unused[2];
+ };
+ #elif defined(TARGET_XTENSA)
+ #define TARGET_STAT_HAVE_NSEC
+@@ -1949,8 +1949,8 @@ struct target_stat {
+     abi_ulong       target_st_mtime_nsec;
+     abi_ulong       target_st_ctime;
+     abi_ulong       target_st_ctime_nsec;
+-    abi_ulong       __unused4;
+-    abi_ulong       __unused5;
++    abi_ulong       __qemu_unused4;
++    abi_ulong       __qemu_unused5;
+ };
+ 
+ #define TARGET_HAS_STRUCT_STAT64
+@@ -1964,7 +1964,7 @@ struct target_stat64  {
+     abi_ullong st_rdev;         /* Device number, if device. */
+     abi_llong st_size;          /* Size of file, in bytes. */
+     abi_ulong st_blksize;       /* Optimal block size for I/O. */
+-    abi_ulong __unused2;
++    abi_ulong __qemu_unused2;
+     abi_ullong st_blocks;       /* Number 512-byte blocks allocated. */
+     abi_ulong target_st_atime;  /* Time of last access. */
+     abi_ulong target_st_atime_nsec;
+@@ -1972,8 +1972,8 @@ struct target_stat64  {
+     abi_ulong target_st_mtime_nsec;
+     abi_ulong target_st_ctime;  /* Time of last status change. */
+     abi_ulong target_st_ctime_nsec;
+-    abi_ulong __unused4;
+-    abi_ulong __unused5;
++    abi_ulong __qemu_unused4;
++    abi_ulong __qemu_unused5;
+ };
+ 
+ #elif defined(TARGET_OR1K) \
+@@ -2001,8 +2001,8 @@ struct target_stat {
+     abi_ulong target_st_mtime_nsec;
+     abi_long target_st_ctime;
+     abi_ulong target_st_ctime_nsec;
+-    abi_uint __unused4;
+-    abi_uint __unused5;
++    abi_uint __qemu_unused4;
++    abi_uint __qemu_unused5;
+ };
+ 
+ #if !defined(TARGET_RISCV64) && !defined(TARGET_LOONGARCH64)
+@@ -2026,8 +2026,8 @@ struct target_stat64 {
+     abi_uint target_st_mtime_nsec;
+     abi_int target_st_ctime;
+     abi_uint target_st_ctime_nsec;
+-    abi_uint __unused4;
+-    abi_uint __unused5;
++    abi_uint __qemu_unused4;
++    abi_uint __qemu_unused5;
+ };
+ #endif
+ 

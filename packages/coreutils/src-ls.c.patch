@@ -1,0 +1,12 @@
+--- a/src/ls.c
++++ b/src/ls.c
+@@ -1921,6 +1921,9 @@ decode_switches (int argc, char **argv)
+   ptrdiff_t tabsize_opt = -1;
+   ptrdiff_t width_opt = -1;
+ 
++  /* Termux patch: Default to colors if terminal. The --color option may override this. */
++  print_with_color = isatty(STDOUT_FILENO);
++
+   while (true)
+     {
+       int oi = -1;

@@ -1,0 +1,19 @@
+--- a/src/strip.c
++++ b/src/strip.c
+@@ -767,8 +767,14 @@ process_file (const char *fname)
+ 
+       /* If we have to preserve the timestamp, we need it in the
+ 	 format utimes() understands.  */
+-      tv[0] = pre_st.st_atim;
+-      tv[1] = pre_st.st_mtim;
++      struct timespec atime;
++      atime.tv_sec = pre_st.st_atime;
++      atime.tv_nsec = pre_st.st_atime_nsec;
++      struct timespec mtime;
++      mtime.tv_sec = pre_st.st_mtime;
++      mtime.tv_nsec = pre_st.st_mtime_nsec;
++      tv[0] = atime;
++      tv[1] = mtime;
+     }
+ 
+   /* Open the file.  */

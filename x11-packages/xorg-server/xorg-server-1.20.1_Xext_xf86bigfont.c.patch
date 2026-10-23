@@ -1,0 +1,19 @@
+--- a/Xext/xf86bigfont.c
++++ b/Xext/xf86bigfont.c
+@@ -718,16 +718,7 @@
+         /* fprintf(stderr, "signature = 0x%08X\n", signature); */
+ 
+         FontShmdescIndex = xfont2_allocate_font_private_index();
+-
+-#if !defined(CSRG_BASED) && !defined(__CYGWIN__)
+-        pagesize = SHMLBA;
+-#else
+-#ifdef _SC_PAGESIZE
+         pagesize = sysconf(_SC_PAGESIZE);
+-#else
+-        pagesize = getpagesize();
+-#endif
+-#endif
+ #endif
+     }
+ }

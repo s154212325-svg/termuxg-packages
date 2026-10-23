@@ -1,0 +1,20 @@
+--- a/ext/Errno/Errno_pm.PL
++++ b/ext/Errno/Errno_pm.PL
+@@ -112,7 +112,7 @@
+     # When cross-compiling we may store a path for gcc's "sysroot" option:
+     my $sysroot = $Config{sysroot} || '';
+     my $linux_errno_h;
+-    if ($^O eq 'linux') {
++    if ($^O eq 'linux' || $^O eq 'android') {
+ 	# Some Linuxes have weird errno.hs which generate
+ 	# no #file or #line directives
+ 	($linux_errno_h) = grep { -e $_ } map { "$_/errno.h" }
+@@ -136,7 +136,7 @@
+ 	if ($dep =~ /(\S+errno\.h)/) {
+ 	     push(@file, $1);
+ 	}
+-    } elsif ($^O eq 'linux' &&
++    } elsif (($^O eq 'linux' || $^O eq 'android') &&
+ 	      $Config{gccversion} ne '' && 
+ 	      $Config{gccversion} !~ /intel/i &&
+ 	      # might be using, say, Intel's icc

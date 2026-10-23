@@ -1,0 +1,14 @@
+--- a/libarchive/archive_write_set_format_zip.c
++++ b/libarchive/archive_write_set_format_zip.c
+@@ -933,10 +933,8 @@ archive_write_zip_header(struct archive_write *a, struct archive_entry *entry)
+ 			if (strcmp(archive_string_conversion_charset_name(
+ 					zip->opt_sconv), "UTF-8") == 0)
+ 				zip->entry_flags |= ZIP_ENTRY_FLAG_UTF8_NAME;
+-#if HAVE_NL_LANGINFO
+-		} else if (strcmp(nl_langinfo(CODESET), "UTF-8") == 0) {
++		} else {
+ 			zip->entry_flags |= ZIP_ENTRY_FLAG_UTF8_NAME;
+-#endif
+ 		}
+ 	}
+ 	/* Reject empty or overlong pathnames */

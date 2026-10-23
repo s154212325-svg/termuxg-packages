@@ -1,0 +1,14 @@
+--- a/libarchive/archive_write_disk_posix.c
++++ b/libarchive/archive_write_disk_posix.c
+@@ -3180,7 +3180,11 @@ cleanup_pathname_win(char *path)
+ 	alen = 0;
+ 	mb = 0;
+ 	complete = 1;
++#ifdef __ANDROID__
++	utf8 = 1;
++#else
+ 	utf8 = (strcmp(nl_langinfo(CODESET), "UTF-8") == 0)? 1: 0;
++#endif
+ 	for (p = path; *p != '\0'; p++) {
+ 		++alen;
+ 		if (*p == '\\') {

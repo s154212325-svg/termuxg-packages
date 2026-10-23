@@ -1,0 +1,11 @@
+--- a/hw/xfree86/parser/write.c
++++ b/hw/xfree86/parser/write.c
+@@ -129,7 +129,7 @@
+ int
+ xf86writeConfigFile(const char *filename, XF86ConfigPtr cptr)
+ {
+-#ifndef HAS_NO_UIDS
++#if !defined(HAS_NO_UIDS) && !defined(__ANDROID__)
+     int ret;
+ 
+     if (getuid() != geteuid()) {

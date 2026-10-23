@@ -1,0 +1,11 @@
+--- a/src/ar.c
++++ b/src/ar.c
+@@ -26,7 +26,7 @@
+ #include <gelf.h>
+ #include <limits.h>
+ #include <locale.h>
+-#include <search.h>
++#include "search/search.h"
+ #include <stdbool.h>
+ #include <stdlib.h>
+ #include <stdio.h>

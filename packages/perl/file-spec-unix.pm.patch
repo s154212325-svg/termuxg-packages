@@ -1,0 +1,11 @@
+--- a/dist/PathTools/lib/File/Spec/Unix.pm
++++ b/dist/PathTools/lib/File/Spec/Unix.pm
+@@ -196,7 +196,7 @@
+ sub tmpdir {
+     my $cached = $_[0]->_cached_tmpdir('TMPDIR');
+     return $cached if defined $cached;
+-    $_[0]->_cache_tmpdir($_[0]->_tmpdir( $ENV{TMPDIR}, "/tmp" ), 'TMPDIR');
++    $_[0]->_cache_tmpdir($_[0]->_tmpdir( $ENV{TMPDIR}, "@TERMUX_PREFIX@/tmp" ), 'TMPDIR');
+ }
+ 
+ =item updir

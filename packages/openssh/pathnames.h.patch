@@ -1,0 +1,73 @@
+diff --git a/pathnames.h b/pathnames.h
+index 8713153dc..4a7795d37 100644
+--- a/pathnames.h
++++ b/pathnames.h
+@@ -74,7 +74,7 @@
+ #define _PATH_SSH_AGENT_SOCKET_DIR	"user:" _PATH_SSH_USER_DIR "/agent"
+ 
+ /* Directory spec for ssh-agent sockets in /tmp */
+-#define _PATH_SSH_AGENT_SOCKET_TMPDIR	"shared:/tmp"
++#define _PATH_SSH_AGENT_SOCKET_TMPDIR	"shared:@TERMUX_PREFIX@/tmp"
+ 
+ /*
+  * Per-user file containing host keys of known hosts.  This file need not be
+@@ -131,7 +131,7 @@
+  * ~/.rhosts and /etc/hosts.equiv if rhosts authentication is enabled.
+  */
+ #define _PATH_SSH_HOSTS_EQUIV		SSHDIR "/shosts.equiv"
+-#define _PATH_RHOSTS_EQUIV		"/etc/hosts.equiv"
++#define _PATH_RHOSTS_EQUIV		"@TERMUX_PREFIX@/etc/hosts.equiv"
+ 
+ /*
+  * Default location of askpass
+@@ -142,27 +142,27 @@
+ 
+ /* Location of ssh-keysign for hostbased authentication */
+ #ifndef _PATH_SSH_KEY_SIGN
+-#define _PATH_SSH_KEY_SIGN		"/usr/libexec/ssh-keysign"
++#define _PATH_SSH_KEY_SIGN		"@TERMUX_PREFIX@/libexec/ssh-keysign"
+ #endif
+ 
+ /* Location of ssh-pkcs11-helper to support keys in tokens */
+ #ifndef _PATH_SSH_PKCS11_HELPER
+-#define _PATH_SSH_PKCS11_HELPER		"/usr/libexec/ssh-pkcs11-helper"
++#define _PATH_SSH_PKCS11_HELPER		"@TERMUX_PREFIX@/libexec/ssh-pkcs11-helper"
+ #endif
+ 
+ /* Location of ssh-sk-helper to support keys in security keys */
+ #ifndef _PATH_SSH_SK_HELPER
+-#define _PATH_SSH_SK_HELPER		"/usr/libexec/ssh-sk-helper"
++#define _PATH_SSH_SK_HELPER		"@TERMUX_PREFIX@/libexec/ssh-sk-helper"
+ #endif
+ 
+ /* xauth for X11 forwarding */
+ #ifndef _PATH_XAUTH
+-#define _PATH_XAUTH			"/usr/X11R6/bin/xauth"
++#define _PATH_XAUTH			"@TERMUX_PREFIX@/bin/xauth"
+ #endif
+ 
+ /* UNIX domain socket for X11 server; displaynum will replace %u */
+ #ifndef _PATH_UNIX_X
+-#define _PATH_UNIX_X "/tmp/.X11-unix/X%u"
++#define _PATH_UNIX_X "@TERMUX_PREFIX@/tmp/.X11-unix/X%u"
+ #endif
+ 
+ /* for scp */
+@@ -172,7 +172,7 @@
+ 
+ /* for sftp */
+ #ifndef _PATH_SFTP_SERVER
+-#define _PATH_SFTP_SERVER		"/usr/libexec/sftp-server"
++#define _PATH_SFTP_SERVER		"@TERMUX_PREFIX@/libexec/sftp-server"
+ #endif
+ #ifndef _PATH_LS
+ #define _PATH_LS			"ls"
+@@ -185,7 +185,7 @@
+ 
+ /* for passwd change */
+ #ifndef _PATH_PASSWD_PROG
+-#define _PATH_PASSWD_PROG		"/usr/bin/passwd"
++#define _PATH_PASSWD_PROG		"@TERMUX_PREFIX@/bin/passwd"
+ #endif
+ 
+ /* Askpass program define */

@@ -1,0 +1,11 @@
+--- a/usr/bin/byobu.in
++++ b/usr/bin/byobu.in
+@@ -70,7 +70,7 @@ if [ -z "${BYOBU_PREFIX}" ]; then
+ 		. "$HOME/.byoburc"
+ 	fi
+ fi
+-BYOBU_CHARMAP=$(locale charmap 2>/dev/null) || BYOBU_CHARMAP=
++BYOBU_CHARMAP=UTF-8
+ if [ -z "$BYOBU_CHARMAP" ]; then
+ 	# OpenBSD's locale(1) has no 'charmap' keyword; use the locale's name. LP: #1697314
+ 	case "${LC_ALL:-${LC_CTYPE:-$LANG}}" in

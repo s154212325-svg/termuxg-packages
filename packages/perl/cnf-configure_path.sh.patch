@@ -1,0 +1,11 @@
+--- a/cnf/configure_path.sh
++++ b/cnf/configure_path.sh
+@@ -109,7 +109,7 @@
+ define privlibexp "$privlib"
+ define binexp "$bin"
+ 
+-define libpth "/lib /usr/lib /usr/local/lib"
++define libpth "@TERMUX_PREFIX@/lib @TERMUX_PREFIX@/local/lib"
+ define glibpth "$libpth"
+ define plibpth
+ 

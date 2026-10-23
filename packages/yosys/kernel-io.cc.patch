@@ -1,0 +1,11 @@
+--- a/kernel/io.cc
++++ b/kernel/io.cc
+@@ -181,7 +181,7 @@ std::string get_base_tmpdir()
+ 			tmpdir.pop_back();
+ 		}
+ 	} else {
+-		tmpdir.assign("/tmp");
++		tmpdir.assign("@TERMUX_PREFIX@/tmp");
+ 	}
+ #endif
+ 	return tmpdir;

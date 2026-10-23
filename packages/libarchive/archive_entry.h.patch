@@ -1,0 +1,14 @@
+--- a/libarchive/archive_entry.h
++++ b/libarchive/archive_entry.h
+@@ -126,11 +126,6 @@ typedef ssize_t la_ssize_t;
+ #define __LA_INO_T la_uint64_t
+ #endif
+ 
+-/* Large file support for Android */
+-#if defined(__LIBARCHIVE_BUILD) && defined(__ANDROID__)
+-#include "android_lf.h"
+-#endif
+-
+ /*
+  * On Windows, define LIBARCHIVE_STATIC if you're building or using a
+  * .lib.  The default here assumes you're building a DLL.  Only

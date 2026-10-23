@@ -1,0 +1,51 @@
+--- a/ext/canvas/byow.rs
++++ b/ext/canvas/byow.rs
+@@ -4,6 +4,7 @@ use std::cell::OnceCell;
+ use std::cell::RefCell;
+ use std::ffi::c_void;
+ #[cfg(any(
++  target_os = "android",
+   target_os = "linux",
+   target_os = "macos",
+   target_os = "freebsd",
+@@ -56,6 +57,7 @@ pub enum ByowError {
+   #[error("Invalid system on macOS")]
+   InvalidSystem,
+   #[cfg(any(
++    target_os = "android",
+     target_os = "linux",
+     target_os = "freebsd",
+     target_os = "openbsd"
+@@ -64,6 +66,7 @@ pub enum ByowError {
+   #[error("Invalid system on Linux/BSD")]
+   InvalidSystem,
+   #[cfg(any(
++    target_os = "android",
+     target_os = "windows",
+     target_os = "linux",
+     target_os = "freebsd",
+@@ -73,6 +76,7 @@ pub enum ByowError {
+   #[error("window is null")]
+   NullWindow,
+   #[cfg(any(
++    target_os = "android",
+     target_os = "linux",
+     target_os = "freebsd",
+     target_os = "openbsd"
+@@ -435,7 +439,7 @@ fn raw_window(
+   Ok((win_handle, Some(display_handle)))
+ }
+ 
+-#[cfg(any(target_os = "linux", target_os = "freebsd", target_os = "openbsd"))]
++#[cfg(any(target_os = "android", target_os = "linux", target_os = "freebsd", target_os = "openbsd"))]
+ fn raw_window(
+   system: UnsafeWindowSurfaceSystem,
+   window: *const c_void,
+@@ -473,6 +477,7 @@ fn raw_window(
+ }
+ 
+ #[cfg(not(any(
++  target_os = "android",
+   target_os = "macos",
+   target_os = "windows",
+   target_os = "linux",

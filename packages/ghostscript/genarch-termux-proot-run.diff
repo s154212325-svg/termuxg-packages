@@ -1,0 +1,11 @@
+--- a/base/lib.mak
++++ b/base/lib.mak
+@@ -94,7 +94,7 @@ stdpre_h=$(GLSRC)stdpre.h
+ stdint__h=$(GLSRC)stdint_.h
+ 
+ $(GLGEN)arch.h : $(GENARCH_XE)
+-	$(EXP)$(GENARCH_XE) $(GLGEN)arch.h $(TARGET_ARCH_FILE)
++	$(EXP) termux-proot-run $(GENARCH_XE) $(GLGEN)arch.h $(TARGET_ARCH_FILE)
+ 
+ # Platform interfaces
+ 

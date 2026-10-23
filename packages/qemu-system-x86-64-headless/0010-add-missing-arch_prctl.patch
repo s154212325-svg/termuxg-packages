@@ -1,0 +1,15 @@
+--- a/tcg/x86_64/tcg-target.c.inc
++++ b/tcg/x86_64/tcg-target.c.inc
+@@ -1883,7 +1883,11 @@ static HostAddress x86_guest_base = {
+ #if defined(__linux__)
+ # include <asm/prctl.h>
+ # include <sys/prctl.h>
+-int arch_prctl(int code, unsigned long addr);
++# include <linux/unistd.h>
++static int arch_prctl(int code, unsigned long addr)
++{
++    return syscall(__NR_arch_prctl, code, addr);
++}
+ static inline int setup_guest_base_seg(void)
+ {
+     if (arch_prctl(ARCH_SET_GS, guest_base) == 0) {

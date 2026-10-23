@@ -1,0 +1,12 @@
+--- a/lib/system.h
++++ b/lib/system.h
+@@ -76,6 +76,9 @@ void error(int status, int errnum, const char *format, ...);
+     exit (EXIT_FAILURE); \
+   } while (0)
+ 
++extern char* __progname;
++#define program_invocation_short_name __progname
++
+ #if BYTE_ORDER == LITTLE_ENDIAN
+ # define LE32(n)	(n)
+ # define LE64(n)	(n)

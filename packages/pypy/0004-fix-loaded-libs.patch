@@ -1,0 +1,97 @@
+--- a/lib_pypy/_audioop_build.py
++++ b/lib_pypy/_audioop_build.py
+@@ -627,7 +627,7 @@ void adcpm2lin(unsigned char* ncp, unsigned char* cp, size_t len,
+ }
+ """
+ 
+-ffi.set_source("_audioop_cffi", C_SOURCE)
++ffi.set_source("_audioop_cffi", C_SOURCE, libraries=["m"])
+ 
+ if __name__ == "__main__":
+     ffi.compile()
+--- a/lib_pypy/_syslog_build.py
++++ b/lib_pypy/_syslog_build.py
+@@ -23,7 +23,7 @@ ffi.set_source("_syslog_cffi", """
+ #ifndef LOG_NEWS
+ #define LOG_NEWS LOG_MAIL
+ #endif
+-""")
++""", libraries=['log'])
+ 
+ ffi.cdef("""
+ /* mandatory constants */
+--- a/lib_pypy/dbm.py
++++ b/lib_pypy/dbm.py
+@@ -123,7 +123,9 @@ def _init_func(name, argtypes=None, restype=None):
+         func.restype = restype
+ 
+ if sys.platform != 'darwin':
+-    libpath = ctypes.util.find_library('db')
++    libpath = ctypes.util.find_library('gdbm_compat')
++    if not libpath:
++        libpath = ctype.util.find_library('db')
+     if not libpath:
+         # XXX this is hopeless...
+         for c in ['5.3', '5.2', '5.1', '5.0', '4.9', '4.8', '4.7', '4.6', '4.5']:
+--- a/pypy/module/_multiprocessing/interp_semaphore.py
++++ b/pypy/module/_multiprocessing/interp_semaphore.py
+@@ -41,7 +41,7 @@ else:
+     if sys.platform == 'darwin':
+         libraries = []
+     else:
+-        libraries = ['rt']
++        libraries = ['android-posix-semaphore']
+ 
+     eci = ExternalCompilationInfo(
+         includes = ['sys/time.h',
+--- a/rpython/rlib/rposix.py
++++ b/rpython/rlib/rposix.py
+@@ -214,7 +214,7 @@ else:
+         includes.append('sys/ttycom.h')
+     if sys.platform == 'darwin':
+         includes.append('copyfile.h')
+-    libraries = ['util']
++    libraries = ['c']
+ 
+ eci = ExternalCompilationInfo(
+     includes=includes,
+@@ -2176,6 +2176,8 @@ if _LINUX:
+     # always returns an error.
+     cConfig["HAVE_LCHMOD"] = False
+ globals().update(cConfig)
++# Remove faccessat, linkat
++HAVE_FACCESSAT = HAVE_LINKAT = False
+ 
+ if not _WIN32:
+     class CConfig:
+--- a/rpython/rlib/rtime.py
++++ b/rpython/rlib/rtime.py
+@@ -29,10 +29,6 @@ else:
+                 'sys/types.h', 'unistd.h',
+                 'sys/time.h', 'sys/resource.h']
+ 
+-    if not sys.platform.startswith("openbsd") and \
+-       not sys.platform.startswith("freebsd"):
+-        includes.append('sys/timeb.h')
+-
+     need_rusage = True
+ 
+ 
+@@ -58,7 +54,7 @@ class CConfig:
+ if sys.platform.startswith('freebsd') or sys.platform.startswith('netbsd'):
+     libraries = ['compat']
+ elif sys.platform == 'linux2':
+-    libraries = ['rt']
++    libraries = ['c']
+ else:
+     libraries = []
+ 
+@@ -209,7 +205,7 @@ if HAS_CLOCK_GETTIME_RUNTIME:
+     # do we need to add -lrt?
+     eciclock = CConfigForClockGetTime._compilation_info_
+     if not _NO_MISSING_RT:
+-        eciclock = eciclock.merge(ExternalCompilationInfo(libraries=['rt']))
++        eciclock = eciclock.merge(ExternalCompilationInfo(libraries=['c']))
+     # the functions:
+     c_clock_getres = external("clock_getres",
+                               [lltype.Signed, lltype.Ptr(TIMESPEC)],

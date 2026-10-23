@@ -1,0 +1,11 @@
+--- a/Source/WTF/wtf/PlatformGTK.cmake
++++ b/Source/WTF/wtf/PlatformGTK.cmake
+@@ -62,7 +62,7 @@ list(APPEND WTF_PUBLIC_HEADERS
+     unix/UnixFileDescriptor.h
+ )
+ 
+-if (CMAKE_SYSTEM_NAME MATCHES "Linux")
++if (CMAKE_SYSTEM_NAME MATCHES "Android")
+     list(APPEND WTF_SOURCES
+         linux/CurrentProcessMemoryStatus.cpp
+         linux/HighPriorityThreads.cpp

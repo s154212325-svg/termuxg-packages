@@ -1,0 +1,19 @@
+--- a/vendor/github.com/dolthub/go-mysql-server/sql/types/strings.go
++++ b/vendor/github.com/dolthub/go-mysql-server/sql/types/strings.go
+@@ -17,6 +17,7 @@ package types
+ import (
+ 	"context"
+ 	"fmt"
++	"math"
+ 	"reflect"
+ 	"strconv"
+ 	strings2 "strings"
+@@ -40,7 +41,7 @@ const (
+ 	TinyTextBlobMax   = charBinaryMax
+ 	TextBlobMax       = varcharVarbinaryMax
+ 	MediumTextBlobMax = 16_777_215
+-	LongTextBlobMax   = int64(4_294_967_295)
++	LongTextBlobMax   = int64(math.MaxInt32)
+ 
+ 	// Constants for charset validation
+ 	asciiMax            = 127

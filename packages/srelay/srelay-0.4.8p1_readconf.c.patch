@@ -1,0 +1,11 @@
+--- a/readconf.c
++++ b/readconf.c
+@@ -34,6 +34,8 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ 
+ #include "srelay.h"
+ 
++#include <crypt.h>
++
+ /* prototypes */
+ int setport __P((u_int16_t *, char *));
+ void add_proxy __P((PROXY_INFO *, PROXY_INFO **, int *));

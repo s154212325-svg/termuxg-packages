@@ -1,0 +1,40 @@
+diff --git a/misc.c b/misc.c
+index 866f7b8e2..656b48fdb 100644
+--- a/misc.c
++++ b/misc.c
+@@ -1930,7 +1930,7 @@ mktemp_proto(char *s, size_t len)
+ 		if (r > 0 && (size_t)r < len)
+ 			return;
+ 	}
+-	r = snprintf(s, len, "/tmp/ssh-XXXXXXXXXXXX");
++	r = snprintf(s, len, "@TERMUX_PREFIX@/tmp/ssh-XXXXXXXXXXXX");
+ 	if (r < 0 || (size_t)r >= len)
+ 		fatal_f("template string too short");
+ }
+@@ -2961,6 +2961,7 @@ subprocess(const char *tag, const char *command,
+ 			    pw->pw_name, (u_int)pw->pw_gid, strerror(errno));
+ 			_exit(1);
+ 		}
++#ifndef __ANDROID__
+ 		if (setresgid(pw->pw_gid, pw->pw_gid, pw->pw_gid) == -1) {
+ 			error("%s: setresgid %u: %s", tag, (u_int)pw->pw_gid,
+ 			    strerror(errno));
+@@ -2971,6 +2972,7 @@ subprocess(const char *tag, const char *command,
+ 			    strerror(errno));
+ 			_exit(1);
+ 		}
++#endif
+ 		/* stdin is pointed to /dev/null at this point */
+ 		if ((flags & SSH_SUBPROCESS_STDOUT_DISCARD) != 0 &&
+ 		    dup2(STDIN_FILENO, STDERR_FILENO) == -1) {
+@@ -3275,8 +3277,8 @@ mkdir_path(const char *target, mode_t mode)
+ 	dir = odir = xstrdup(target);
+ 
+ 	if (*dir == '/' &&
+-	    (fd = open("/", O_RDONLY|O_DIRECTORY)) == -1) {
+-		error_f("open(\"/\"): %s", strerror(errno));
++	    (fd = open("@TERMUX_PREFIX@/", O_RDONLY|O_DIRECTORY)) == -1) {
++		error_f("open(\"@TERMUX_PREFIX@/\"): %s", strerror(errno));
+ 		free(odir);
+ 		return -1;
+ 	}

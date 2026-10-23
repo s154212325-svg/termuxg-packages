@@ -1,0 +1,11 @@
+TERMUX_PKG_HOMEPAGE=https://gtkwave.github.io/gtkwave/
+TERMUX_PKG_DESCRIPTION="A wave viewer which reads LXT, LXT2, VZT, GHW and VCD/EVCD files"
+TERMUX_PKG_LICENSE="GPL-2.0, MIT"
+TERMUX_PKG_MAINTAINER="@termux"
+TERMUX_PKG_VERSION="1:3.3.128"
+TERMUX_PKG_SRCURL=https://downloads.sourceforge.net/project/gtkwave/gtkwave-gtk3-${TERMUX_PKG_VERSION#*:}/gtkwave-gtk3-${TERMUX_PKG_VERSION#*:}.tar.gz
+TERMUX_PKG_SHA256=817e197fc1808f8aac3543c2c2f9683cb01368c91192b8eae5af58070ef1d1f8
+TERMUX_PKG_AUTO_UPDATE=true
+TERMUX_PKG_DEPENDS="gdk-pixbuf, glib, gtk3, libandroid-shmem, libbz2, libc++, liblzma, pango, zlib"
+TERMUX_PKG_RECOMMENDS="desktop-file-utils"
+TERMUX_PKG_EXTRA_CONFIGURE_ARGS="--disable-tcl --disable-mime-update --enable-gtk3"

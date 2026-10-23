@@ -1,0 +1,10 @@
+--- a/src/regex.c
++++ b/src/regex.c
+@@ -24,7 +24,6 @@
+ #ifdef __linux__
+ #include <sys/types.h>
+ #include <stdlib.h>
+-#include <regex.h>
+ #else
+ #if defined __CYGWIN__ || defined __MINGW32__
+ #include <sys/types.h>

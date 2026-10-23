@@ -1,0 +1,53 @@
+--- a/src/font.c
++++ b/src/font.c
+@@ -1449,8 +1449,8 @@ static void init_font_lists()		//	LIST INITIALIZATION
+ 		FILE *fp;
+ 		char buf[4096], buf2[128], *s;
+ 
+-		if (!(fp = fopen("/etc/X11/xorg.conf", "r")))
+-			fp = fopen("/etc/X11/XF86Config", "r");
++		if (!(fp = fopen("@TERMUX_PREFIX@/etc/X11/xorg.conf", "r")))
++			fp = fopen("@TERMUX_PREFIX@/etc/X11/XF86Config", "r");
+ 
+ 		// If these files are not found the user will have to manually enter directories
+ 
+@@ -1476,7 +1476,7 @@ static void init_font_lists()		//	LIST INITIALIZATION
+ 			fclose(fp);
+ 		}
+ 
+-		if (!new_dirs && (fp = fopen("/etc/fonts/fonts.conf", "r")))
++		if (!new_dirs && (fp = fopen("@TERMUX_PREFIX@/etc/fonts/fonts.conf", "r")))
+ 		{
+ 			char *s1, *s2;
+ 
+--- a/src/main.c
++++ b/src/main.c
+@@ -415,7 +415,7 @@ int main( int argc, char *argv[] )
+ 	g_thread_init(NULL);
+ #endif
+ 	env = getenv("MTPAINT_INI");
+-	inifile_init("/etc/mtpaint/mtpaintrc", env ? env : "~/.mtpaint");
++	inifile_init("@TERMUX_PREFIX@/etc/mtpaint/mtpaintrc", env ? env : "~/.mtpaint");
+ 
+ #ifdef U_NLS
+ #if GTK_MAJOR_VERSION == 1
+--- a/src/spawn.c
++++ b/src/spawn.c
+@@ -1001,8 +1001,7 @@ int run_def_action_x(int action, da_settings *settings)
+ #else /* Linux */
+ 
+ #define HANDBOOK_BROWSER "seamonkey"
+-#define HANDBOOK_LOCATION "/usr/doc/mtpaint/index.html"
+-#define HANDBOOK_LOCATION2 "/usr/share/doc/mtpaint/index.html"
++#define HANDBOOK_LOCATION "@TERMUX_PREFIX@/share/doc/mtpaint/index.html"
+ 
+ #endif
+ 
+@@ -1030,7 +1029,6 @@ int show_html(char *browser, char *docs)
+ 	if (!docs || !docs[0])
+ 	{
+ 		docs = HANDBOOK_LOCATION;
+-		if (valid_file(docs) < 0) docs = HANDBOOK_LOCATION2;
+ 	}
+ #endif
+ 	else docs = gtkncpy(buf + 1, docs, PATHBUF);

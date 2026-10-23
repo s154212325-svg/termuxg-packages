@@ -1,0 +1,11 @@
+--- a/linux-user/strace.c
++++ b/linux-user/strace.c
+@@ -2,7 +2,7 @@
+ 
+ #include <sys/ipc.h>
+ #include <sys/msg.h>
+-#include <sys/sem.h>
++#include <linux/sem.h>
+ #include <sys/shm.h>
+ #include <sys/select.h>
+ #include <sys/mount.h>

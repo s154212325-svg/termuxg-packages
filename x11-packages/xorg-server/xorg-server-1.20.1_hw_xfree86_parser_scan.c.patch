@@ -1,0 +1,21 @@
+--- a/hw/xfree86/parser/scan.c
++++ b/hw/xfree86/parser/scan.c
+@@ -881,13 +881,13 @@
+  */
+ 
+ #ifndef DEFAULT_CONF_PATH
+-#define DEFAULT_CONF_PATH	"/etc/X11/%S," \
++#define DEFAULT_CONF_PATH	"@TERMUX_PREFIX@/etc/X11/%S," \
+ 							"%P/etc/X11/%S," \
+-							"/etc/X11/%G," \
++							"@TERMUX_PREFIX@/etc/X11/%G," \
+ 							"%P/etc/X11/%G," \
+-							"/etc/X11/%X-%M," \
+-							"/etc/X11/%X," \
+-							"/etc/%X," \
++							"@TERMUX_PREFIX@/etc/X11/%X-%M," \
++							"@TERMUX_PREFIX@/etc/X11/%X," \
++							"@TERMUX_PREFIX@/etc/%X," \
+ 							"%P/etc/X11/%X.%H," \
+ 							"%P/etc/X11/%X-%M," \
+ 							"%P/etc/X11/%X," \

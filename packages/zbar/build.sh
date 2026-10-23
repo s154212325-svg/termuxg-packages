@@ -1,0 +1,26 @@
+TERMUX_PKG_HOMEPAGE=https://github.com/mchehab/zbar
+TERMUX_PKG_DESCRIPTION="Software suite for reading bar codes from various sources"
+TERMUX_PKG_LICENSE="LGPL-2.1"
+TERMUX_PKG_MAINTAINER="@termux"
+TERMUX_PKG_VERSION="0.23.95"
+TERMUX_PKG_SRCURL=https://github.com/mchehab/zbar/archive/refs/tags/${TERMUX_PKG_VERSION}.tar.gz
+TERMUX_PKG_SHA256=3bad3fe7b8764c6e2131cba91d40e22567a1365352914b62b55247b49124ed33
+TERMUX_PKG_AUTO_UPDATE=true
+TERMUX_PKG_DEPENDS="imagemagick, libiconv, libjpeg-turbo"
+TERMUX_PKG_BREAKS="zbar-dev"
+TERMUX_PKG_REPLACES="zbar-dev"
+TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
+-Dpthread=false
+-Dvideo=false
+-Dxshm=disabled
+-Dxv=disabled
+-Dx11=disabled
+-Dgtk=no
+-Dgir=false
+-Dqt=false
+-Dpython=no
+-Djava=disabled
+-Ddbus=disabled
+-Ddoc=true
+-Dbuild_tests=false
+"

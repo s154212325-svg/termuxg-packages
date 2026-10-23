@@ -1,0 +1,17 @@
+Termux sets AT_EACCESS as 0, see ../../ndk-patches/*/linux-fcntl.h.patch.
+This is not allowed in macros FLAG_GENERIC and cause compilation failure.
+
+Although Android doesn't support AT_EACCESS, using its original value here
+shouldn't cause runtime issues.
+
+--- a/linux-user/strace.c
++++ b/linux-user/strace.c
+@@ -1056,7 +1056,7 @@ UNUSED static const struct flags access_flags[] = {
+ 
+ UNUSED static const struct flags at_file_flags[] = {
+ #ifdef AT_EACCESS
+-    FLAG_GENERIC(AT_EACCESS),
++    FLAG_GENERIC(/* AT_EACCESS */ 0x200),
+ #endif
+ #ifdef AT_SYMLINK_NOFOLLOW
+     FLAG_GENERIC(AT_SYMLINK_NOFOLLOW),

@@ -1,0 +1,11 @@
+--- a/debuginfod/debuginfod.cxx
++++ b/debuginfod/debuginfod.cxx
+@@ -120,7 +120,7 @@ using namespace std;
+ #include <libdwelf.h>
+ 
+ #include <microhttpd.h>
+-
++#include <netinet/in.h>
+ #if MHD_VERSION >= 0x00097002
+ // libmicrohttpd 0.9.71 broke API
+ #define MHD_RESULT enum MHD_Result

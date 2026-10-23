@@ -1,0 +1,11 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -189,7 +189,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+ install(TARGETS multitail RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+ # install the config file
+ if(INSTALL_CONFIG)
+-    install(FILES multitail.conf DESTINATION etc RENAME multitail.conf.new)
++    install(FILES multitail.conf DESTINATION etc)
+ endif()
+ # install the manual files
+ install(FILES multitail.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)

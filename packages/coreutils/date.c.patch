@@ -1,0 +1,13 @@
+--- a/src/date.c
++++ b/src/date.c
+@@ -790,6 +790,10 @@ main (int argc, char **argv)
+ 
+       if (set_date)
+         {
++          if (getuid() != 0)
++            {
++              error (EXIT_FAILURE, 0, "only root user can change date/time");
++            }
+           /* Set the system clock to the specified date, then regardless of
+              the success of that operation, format and print that date.  */
+           if (settime (&when) != 0)

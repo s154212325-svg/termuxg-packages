@@ -1,0 +1,11 @@
+--- a/src/pwd.c
++++ b/src/pwd.c
+@@ -358,7 +358,7 @@ main (int argc, char **argv)
+   if (optind < argc)
+     error (0, 0, _("ignoring non-option arguments"));
+ 
+-  if (logical)
++  if (true) /* Termux: Always try logical, to avoid permission denied on /data/data */
+     {
+       char const *wd = logical_getcwd ();
+       if (wd)

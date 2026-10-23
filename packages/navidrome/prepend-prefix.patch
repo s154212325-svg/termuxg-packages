@@ -1,0 +1,18 @@
+--- a/release/linux/navidrome.toml
++++ b/release/linux/navidrome.toml
+@@ -1,2 +1,2 @@
+-DataFolder = "/var/lib/navidrome"
+-MusicFolder = "/opt/navidrome/music"
++DataFolder = "@TERMUX_PREFIX@/var/lib/navidrome"
++MusicFolder = "@TERMUX_PREFIX@/opt/navidrome/music"
+--- a/conf/configuration.go
++++ b/conf/configuration.go
+@@ -1197,7 +1197,7 @@
+ 			return cfgFile
+ 		}
+ 	}
+-	return ""
++	return "@TERMUX_PREFIX@/etc/navidrome/navidrome.toml"
+ }
+ 
+ // MaxOpenConns is the size of the shared SQLite connection pool, used by every subsystem (scanner,

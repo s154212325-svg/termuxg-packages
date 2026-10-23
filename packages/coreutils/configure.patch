@@ -1,0 +1,11 @@
+--- a/configure
++++ b/configure
+@@ -72126,7 +72126,7 @@ fi
+ 
+ 
+   # Determine how to get the list of mounted file systems.
+-  ac_list_mounted_fs=
++  ac_list_mounted_fs=found
+ 
+   # If the getmntent function is available but not in the standard library,
+   # make sure LIBS contains the appropriate -l option.

@@ -1,0 +1,10 @@
+--- a/src/strings.c
++++ b/src/strings.c
+@@ -477,7 +477,6 @@ map_file (int fd, off_t start_off, off_t fdlen, size_t *map_sizep)
+       if (mem != MAP_FAILED)
+ 	{
+ 	  /* We will go through the mapping sequentially.  */
+-	  (void) posix_madvise (mem, map_size, POSIX_MADV_SEQUENTIAL);
+ 	  break;
+ 	}
+       if (errno != EINVAL && errno != ENOMEM)

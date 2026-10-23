@@ -1,0 +1,109 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -133,8 +133,6 @@
+     set(CMAKE_C_FLAGS_RELEASE	"/MT /O2 /Ob2 /D NDEBUG")
+     set(CMAKE_EXE_LINKER_FLAGS_RELEASE "/INCREMENTAL:NO /NODEFAULTLIB:MSVCRT")
+     # note: static libraries are specified when running cmake
+-  else()
+-    set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+   endif()
+ endif()
+ 
+--- a/include/openbabel/plugin.h
++++ b/include/openbabel/plugin.h
+@@ -463,6 +463,13 @@
+   OB_STATIC_PLUGIN(PDBQTFormat, thePDBQTFormat)
+ #ifdef HAVE_LIBZ
+   OB_STATIC_PLUGIN(PNGFormat, thePNGFormat)
++  OB_STATIC_PLUGIN(PNG2Format, thePNG2Format)
++#endif
++#ifdef HAVE_RAPIDJSON
++  OB_STATIC_PLUGIN(KETFormat, theKETFormat)
++  OB_STATIC_PLUGIN(ChemicalJSONFormat, theChemicalJSONFormat)
++  OB_STATIC_PLUGIN(PubChemJSONFormat, thePubChemJSONFormat)
++  OB_STATIC_PLUGIN(ChemDoodleJSONFormat, theChemDoodleJSONFormat)
+ #endif
+   OB_STATIC_PLUGIN(PointCloudFormat, thePointCloudFormat)
+   OB_STATIC_PLUGIN(PovrayFormat, thePovrayFormat)
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -190,7 +190,7 @@
+ else(BUILD_SHARED)
+   include(formats/formats.cmake)
+   foreach(format ${formats})
+-    set(openbabel_srcs ${openbabel_srcs} formats/${format}.cpp)
++    set(openbabel_srcs ${openbabel_srcs} ${${format}_additional_sources} formats/${format}.cpp)
+   endforeach(format ${formats})
+ 
+   if(LIBXML2_FOUND AND WITH_STATIC_LIBXML)
+@@ -200,6 +200,12 @@
+     endforeach(format ${formats_xml})
+   endif(LIBXML2_FOUND AND WITH_STATIC_LIBXML)
+ 
++  if(RAPIDJSON_FOUND)
++    foreach(format ${formats_json})
++      set(openbabel_srcs ${openbabel_srcs} formats/json/${format}.cpp)
++    endforeach(format ${formats_json})
++  endif(RAPIDJSON_FOUND)
++
+   foreach(plugingroup descriptors fingerprints forcefields ops charges)
+     set(openbabel_srcs ${openbabel_srcs} ${${plugingroup}})
+   endforeach(plugingroup descriptors fingerprints forcefields ops charges)
+--- a/src/formats/formats.cmake
++++ b/src/formats/formats.cmake
+@@ -19,8 +19,8 @@
+   textformat
+   titleformat
+   )
+-set(painterformat_additional_sources ../depict/commandpainter.cpp)
+-set(asciiformat_additional_sources   ../depict/asciipainter.cpp)
++set(painterformat_additional_sources ${CMAKE_SOURCE_DIR}/src/depict/commandpainter.cpp)
++set(asciiformat_additional_sources   ${CMAKE_SOURCE_DIR}/src/depict/asciipainter.cpp)
+ if(TARGET Eigen3::Eigen)
+   set(formats_utility ${formats_utility}
+       confabreport
+@@ -152,7 +152,7 @@
+       yasaraformat
+       )
+ 
+-set(wlnformat_additional_sources wln-nextmove.cpp)
++set(wlnformat_additional_sources ${CMAKE_SOURCE_DIR}/src/formats/wln-nextmove.cpp)
+ # genbankformat can currently only be built statically
+ if(NOT BUILD_SHARED)
+   set(formats_misc ${formats_misc} genbankformat)
+@@ -165,7 +165,7 @@
+   set(formats_cairo
+     png2format
+   )
+-  set(png2format_additional_sources ../depict/cairopainter.cpp)
++  set(png2format_additional_sources ${CMAKE_SOURCE_DIR}/src/depict/cairopainter.cpp)
+   set(optional_formatgroups
+     ${optional_formatgroups} formats_cairo
+     )
+--- a/src/plugin.cpp
++++ b/src/plugin.cpp
+@@ -315,6 +315,13 @@
+   plugin_ids.push_back(reinterpret_cast<OBPlugin*>(&thePDBQTFormat)->GetID());
+ #ifdef HAVE_LIBZ
+   plugin_ids.push_back(reinterpret_cast<OBPlugin*>(&thePNGFormat)->GetID());
++  plugin_ids.push_back(reinterpret_cast<OBPlugin*>(&thePNG2Format)->GetID());
++#endif
++#ifdef HAVE_RAPIDJSON
++  plugin_ids.push_back(reinterpret_cast<OBPlugin*>(&theKETFormat)->GetID());
++  plugin_ids.push_back(reinterpret_cast<OBPlugin*>(&theChemicalJSONFormat)->GetID());
++  plugin_ids.push_back(reinterpret_cast<OBPlugin*>(&thePubChemJSONFormat)->GetID());
++  plugin_ids.push_back(reinterpret_cast<OBPlugin*>(&theChemDoodleJSONFormat)->GetID());
+ #endif
+   plugin_ids.push_back(reinterpret_cast<OBPlugin*>(&thePointCloudFormat)->GetID());
+   plugin_ids.push_back(reinterpret_cast<OBPlugin*>(&thePovrayFormat)->GetID());
+--- a/tools/CMakeLists.txt
++++ b/tools/CMakeLists.txt
+@@ -38,7 +38,7 @@
+ SET(GETOPT getopt)
+ CHECK_FUNCTION_EXISTS(${GETOPT} GETOPT_FOUND)
+ 
+-if(BUILD_SHARED)
++if(TRUE)
+   foreach(tool ${tools})
+     add_executable(${tool} ${tool}.cpp)
+     target_link_libraries(${tool} ${BABEL_LIBRARY})
