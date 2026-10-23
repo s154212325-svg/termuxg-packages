@@ -76,3 +76,4 @@ jobs:
             --title "Bootstrap archives for com.termuxg" \
             --notes "$(cat SHA256SUMS)" \
             bootstrap-*.zip SHA256SUMS
+# reindex
