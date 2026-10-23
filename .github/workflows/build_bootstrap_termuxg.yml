@@ -30,7 +30,7 @@ jobs:
           sudo docker image prune --all --force
           df -h /
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Verify package name
         run: grep -n '^TERMUX_APP__PACKAGE_NAME=' scripts/properties.sh
