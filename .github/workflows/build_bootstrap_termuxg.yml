@@ -86,14 +86,6 @@ jobs:
           path: build.log
           if-no-files-found: ignore
 
-      - name: Upload built debs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: debs-${{ matrix.arch }}
-          path: output/*.deb
-          retention-days: 3
-          if-no-files-found: ignore
 
       - name: Upload bootstrap
         uses: actions/upload-artifact@v4
