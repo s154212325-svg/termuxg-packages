@@ -35,6 +35,19 @@ jobs:
       - name: Verify package name
         run: grep -n '^TERMUX_APP__PACKAGE_NAME=' scripts/properties.sh
 
+      - name: Probe apt source download
+        run: |
+          exp=$(grep '^TERMUX_PKG_SHA256=' packages/apt/build.sh | cut -d= -f2)
+          url=https://salsa.debian.org/apt-team/apt/-/archive/2.8.1/apt-2.8.1.tar.bz2
+          for i in $(seq 1 10); do
+            curl -sL --http1.1 -o /tmp/apt.tbz2 "$url" || true
+            h=$(sha256sum /tmp/apt.tbz2 | cut -d' ' -f1)
+            echo "try $i: $(stat -c%s /tmp/apt.tbz2) bytes $h"
+            [ "$h" = "$exp" ] && exit 0
+            sleep 15
+          done
+          echo "salsa keeps truncating the archive"; exit 1
+
       - name: Build builder docker image for com.termuxg
         run: |
           for i in 1 2 3; do

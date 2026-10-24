@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-termux_download() {
+_termux_download_once() {
 	if [[ $# != 2 ]] && [[ $# != 3 ]]; then
 		echo "termux_download(): Invalid arguments - expected <URL> <DESTINATION> [<CHECKSUM>]" 1>&2
 		return 1
@@ -45,6 +45,7 @@ termux_download() {
 		--speed-limit 1000   # Expect at least 1000 Bytes per second
 		--speed-time 60      # Fail if the minimum speed isn't met for at least 60 seconds
 		--location           # Follow redirects
+		--http1.1            # HTTP/2 truncation goes unnoticed
 	)
 	TMPFILE=$(mktemp "$TERMUX_PKG_TMPDIR/download.${TERMUX_PKG_NAME-unnamed}.XXXXXXXXX")
 	if [[ "${TERMUX_QUIET_BUILD-}" == "true" ]]; then
@@ -85,6 +86,16 @@ termux_download() {
 	fi
 	mv "$TMPFILE" "$DESTINATION"
 	return 0
+}
+
+termux_download() {
+	local n
+	for n in 1 2 3 4 5 6 7 8; do
+		_termux_download_once "$@" && return 0
+		echo "termux_download: attempt $n failed, retrying in 20s" 1>&2
+		sleep 20
+	done
+	return 1
 }
 
 # Make script standalone executable as well as sourceable
