@@ -133,6 +133,11 @@ extract_debs() {
 			continue
 		fi
 
+		if [ -n "${NEEDED_PACKAGES_FILE:-}" ] && ! grep -qxF "$current_package_name" "$NEEDED_PACKAGES_FILE"; then
+			echo "[*] Skipping unneeded package '$deb'..."
+			continue
+		fi
+
 		if [[ " ${EXTRACTED_PACKAGES[*]} " == *" $current_package_name "* ]]; then
 			echo "[*] Skipping already extracted package '$current_package_name'..."
 			continue
@@ -246,7 +251,8 @@ create_bootstrap_archive() {
 		zip -r9 "${BOOTSTRAP_TMPDIR}/bootstrap-${1}.zip" ./*
 	)
 
-	mv -f "${BOOTSTRAP_TMPDIR}/bootstrap-${1}.zip" "$TERMUX_PACKAGES_DIRECTORY/"
+	# AppArmor profile only allows writes under output/ (not the repo root).
+	mv -f "${BOOTSTRAP_TMPDIR}/bootstrap-${1}.zip" "$TERMUX_BUILT_DEBS_DIRECTORY/"
 
 	echo "[*] Finished successfully (${1})."
 
@@ -479,7 +485,12 @@ main() {
 			set -e
 		done
 
-		# Extract all debs.
+		# Only extract what the bootstrap needs (runtime deps), not build-only deps.
+		NEEDED_PACKAGES_FILE="$BOOTSTRAP_TMPDIR/needed-${TERMUX_ARCH}.txt"
+		python3 "$TERMUX_SCRIPTDIR/scripts/bootstrap-closure.py" "$TERMUX_BUILT_DEBS_DIRECTORY" "$TERMUX_ARCH" bzip2 "${PACKAGES[@]}" > "$NEEDED_PACKAGES_FILE" || return $?
+		echo "[*] Packages in bootstrap ($(wc -l < "$NEEDED_PACKAGES_FILE")):"; tr "\n" " " < "$NEEDED_PACKAGES_FILE"; echo
+
+		# Extract needed debs.
 		extract_debs "$TERMUX_ARCH" || return $?
 
 		# Add termux bootstrap second stage files
